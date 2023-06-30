@@ -1,0 +1,45 @@
+{# Based on: https://blog.jupyter.org/the-templating-system-of-nbconvert-6-47ea781eacd2 #}
+{# Inspired by: https://github.com/simicd/jupyterlab-tailwind-theme #}
+
+{# Parent template: /opt/homebrew/share/jupyter/nbconvert/templates/lab #}
+{# https://github.com/jupyter/nbconvert/blob/main/share/templates/lab/index.html.j2 #}
+{%- extends 'lab/index.html.j2' -%}
+
+{% block in_prompt -%}
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[]:</div>
+{%- endblock in_prompt %}
+
+{% block output_area_prompt %}
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out&nbsp;[]:</div>
+{% endblock output_area_prompt %}
+
+{% block html_head %}
+{{ super() }}
+<meta name="description" content="{{ nb['metadata']['description'] | escape_html_keep_quotes }}">
+{% endblock html_head %}
+
+{%- block html_head_css -%}
+  {{ super() }}
+
+  {{ resources.include_css("css/variables.css") }}
+  {{ resources.include_css("css/style.css") }}
+{%- endblock html_head_css -%}
+
+{% block body_header %}
+  <body class="jp-Notebook">
+  <div class="header">
+    <div class="logo-container">{% include 'assets/books.svg' %}</div>
+  </div>
+  <div class="content">
+{% endblock body_header %}
+
+{% block body_footer %}
+  </div>
+  <footer>
+    <div id="bibtex">
+      <h3>Citation</h3>
+      <pre>{{ nb['metadata']['bibtex'] }}</pre>
+    </div>
+  </footer>
+  </body>
+{% endblock body_footer %}

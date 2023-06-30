@@ -6,10 +6,16 @@ docker: ## Start the Docker containers
 
 ##@ Deployment
 build: ## Build the website
-	@{ \
+	set -eu;
+	cd src/build && jupyter nbconvert --to html --output-dir=../../_build --output='{notebook_name}.html' --config config.py ../../content/*.ipynb;
+
+preview: build ## Preview the website
+	@bash -c ' \
 		set -eu; \
-		echo "TODO"; \
-	}
+		(python3 -m http.server -b localhost -d _build 8080) & PID=$$!; \
+		trap "echo Exiting...; kill $$PID" SIGINT SIGTERM EXIT; \
+		watchmedo shell-command --patterns="*.ipynb" --command="make build" ./content; \
+	'
 
 ##@ Other
 #------------------------------------------------------------------------------
@@ -18,4 +24,4 @@ help:  ## Display help
 #------------- <https://suva.sh/posts/well-documented-makefiles> --------------
 
 .DEFAULT_GOAL := help
-.PHONY: docker build
+.PHONY: docker build preview
