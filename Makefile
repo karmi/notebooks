@@ -7,12 +7,12 @@ docker: ## Start the Docker containers
 ##@ Deployment
 build: ## Build the website
 	set -eu;
-	cd src/build && jupyter nbconvert --to html --output-dir=../../_build --output='{notebook_name}.html' --config config.py ../../content/*.ipynb;
+	(cd src/build && /usr/bin/env python3 build.py --input=../../content --output=../../_build);
 
 preview: build ## Preview the website
 	@bash -c ' \
 		set -eu; \
-		(python3 -m http.server -b localhost -d _build 8080) & PID=$$!; \
+		(python3 -m http.server -b localhost -d ./_build 8080) & PID=$$!; \
 		trap "echo Exiting...; kill $$PID" SIGINT SIGTERM EXIT; \
 		watchmedo shell-command --patterns="*.ipynb" --command="make build" ./content; \
 	'

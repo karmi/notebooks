@@ -16,6 +16,11 @@
 {% block html_head %}
 {{ super() }}
 <meta name="description" content="{{ nb['metadata']['description'] | escape_html_keep_quotes }}">
+<meta property="og:title" content="{{ nb['metadata']['title'] | escape_html_keep_quotes }}">
+<meta property="og:description" content="{{ nb['metadata']['description'] | escape_html_keep_quotes }}">
+<meta property="og:article:published_time" content="{{ nb['metadata']['date'] }}">
+<meta property="og:article:author" content="{{ nb['metadata']['author'] }}">
+<meta property="og:type" content="article">
 {% endblock html_head %}
 
 {%- block html_head_css -%}

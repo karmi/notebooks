@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index Page</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="content">
+    <h1>Index Page</h1>
+
+    {% for page in pages %}
+    <div class="page">
+        <h2><a href="./{{ page['dirname'] }}/">{{ page['og:title'] }}</a></h2>
+        {% if 'og:description' in page %}
+        <p>{{ page['og:description'] }}</p>
+        {% endif %}
+        {% if 'og:article:published_time' in page %}
+        <p>Published: {{ page['og:article:published_time'] }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
