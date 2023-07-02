@@ -1,7 +1,6 @@
 import os
 import argparse
 import glob
-import shutil
 
 from datetime import datetime
 
@@ -68,13 +67,9 @@ def create_homepage(data, template_file, output_dir):
     with open(os.path.join(output_dir, "index.html"), "w") as file:
         file.write(output)
 
-    shutil.copytree(
-        os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "templates", "notebooks", "css"
-        ),
-        os.path.join(output_dir, "css"),
-        dirs_exist_ok=True,
-    )
+    os.mkdir(os.path.join(output_dir, "css"))
+    with open(os.path.join(output_dir, "css", "style.css"), "w") as file:
+        file.write("body { font-family: sans-serif; }")
 
 
 def main(input_dir, output_dir):
@@ -82,7 +77,7 @@ def main(input_dir, output_dir):
 
     config = get_config()
 
-    config.TemplateExporter.template_name = "notebooks"
+    config.TemplateExporter.template_name = "nbconvert"
     config.TemplateExporter.extra_template_basedirs = [
         os.path.join(os.path.dirname(os.path.realpath(__file__)), "templates"),
     ]

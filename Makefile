@@ -7,6 +7,7 @@ docker: ## Start the Docker containers
 ##@ Deployment
 build: ## Build the website
 	set -eu;
+	rm -rf ./_build;
 	(cd src/build && /usr/bin/env python3 build.py --input=../../content --output=../../_build);
 
 preview: build ## Preview the website
