@@ -5,25 +5,37 @@
     {% include 'ga.html.j2' %}
     {% endif -%}
     <meta charset="UTF-8">
-    <title>Index Page</title>
+    <title>{{ site_title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="content">
-    <h1>Index Page</h1>
-
     {% for page in pages %}
     <div class="page">
         <h2><a href="./{{ page['dirname'] }}/">{{ page['og:title'] }}</a></h2>
-        {% if 'og:description' in page %}
-        <p>{{ page['og:description'] }}</p>
-        {% endif %}
         {% if 'og:article:published_time' in page %}
-        <p>Published: {{ page['og:article:published_time'] }}</p>
+        <p class="date">{{ page['og:article:published_time'] | datetime_format }}</p>
+        {% endif %}
+        {% if 'og:description' in page %}
+        <p class="description">{{ page['og:description'] }}</p>
         {% endif %}
     </div>
     {% endfor %}
   </div>
+
+  <footer>
+    <div id="footer-content">
+      <div class="logo">{% include 'assets/icons/books.svg' %}</div>
+      <h1 class="site_name">{{ site_name }}</h1>
+      <div class="description">
+        <p>{{ site_description | safe }}</p>
+      </div>
+
+      <div class="links">
+        <a href="#github" class="icon" title="Source Code">{% include 'assets/icons/github.svg' %}</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

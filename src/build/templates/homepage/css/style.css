@@ -1,0 +1,142 @@
+:root {
+  /* Colors */
+  /* Source: https://tailwindcss.com/docs/customizing-colors/ */
+
+  --tailwind-grey-100: #F7FAFC;
+  --tailwind-grey-200: #EDF2F7;
+  --tailwind-grey-300: #E2E8F0;
+  --tailwind-grey-400: #CBD5E0;
+  --tailwind-grey-500: #A0AEC0;
+  --tailwind-grey-600: #718096;
+  --tailwind-grey-700: #4A5568;
+  --tailwind-grey-800: #2D3748;
+  --tailwind-grey-900: #1A202C;
+  --tailwind-grey-950: #11151D;
+}
+
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
+@font-face {
+  font-family: 'iA Writer Mono S';
+  src: url('/assets/fonts/iAWriterMonoS/iAWriterMonoS-Regular.woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'iA Writer Duo S';
+  src: url('/assets/fonts/iAWriterDuoS/iAWriterDuoS-Regular.woff2');
+  font-display: swap;
+}
+
+@supports (font-variation-settings: normal) {
+  code { font-family: 'Fira Code VF', monospace; }
+}
+
+@media (max-width: 960px) {
+  .content { margin: 4rem 3vw 4rem 5vw; }
+}
+
+@media (max-width: 960px) and (orientation: landscape) {
+  .content { order: 2; margin: 4rem 10vw 2rem 10vw; }
+  footer { order: 1; }
+  body { grid-template-columns: 19rem auto; }
+}
+
+@media (min-width: 960px) {
+  .content { order: 2; margin: 4rem 10vw 2rem 10vw; }
+  footer { order: 1; }
+  body { grid-template-columns: 20rem auto; }
+}
+
+body {
+  color: #222;
+  background: #f6f5f0;
+  font-family: 'iA Writer Duo S', sans-serif;
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+}
+
+a {
+  color: #222;
+}
+
+.content {
+  text-shadow: 1px 2px 0 #ffffff;
+  max-width: 60rem;
+  position: relative;
+}
+
+.content .page {
+  margin: 0 0 3rem 0;
+}
+
+.content .page h2 {
+  margin: 0 0 0.75rem 0;
+}
+
+.content .page h2 a {
+  color: #DC143C;
+  text-decoration: none;
+  border-bottom: 2px solid #DC143C;
+  transition : border 500ms ease-out;
+}
+
+.content .page p {
+  margin: 0 0 0.25rem 0;
+}
+
+.content .page p.date {
+  opacity: 0.7;
+}
+
+footer {
+  color: #f6f5f0;
+  background-color: var(--tailwind-grey-900);
+}
+
+footer a {
+  color: #f6f5f0;
+}
+
+footer #footer-content {
+  max-width: 60rem;
+  padding: 2.3rem 1rem 2rem 2rem;
+  position: relative;
+}
+
+footer .logo svg {
+  fill: #f6f5f0;
+  width: 100px;
+  height: 100px;
+  filter: drop-shadow(0px 2px 0px #000);
+}
+
+footer .site_name {
+  font-size: 22px;
+  margin: 0.25rem 0 0.25rem 0;
+  text-shadow: 0px 2px 0 #000000;
+}
+
+footer .description {
+  font-size: 80%;
+}
+
+footer .description p {
+  margin: 0 0 0.1rem 0;
+}
+
+footer .links {
+  margin-top: 1rem;
+}
+
+footer .icon svg {
+  /* fill: #f6f5f05e; */
+  fill: #f6f5f0;
+  width: 16px;
+}
+
+footer .icon:hover svg {
+  fill: #f6f5f0;
+}
