@@ -150,8 +150,16 @@ def main(input_dir, output_dir):
     app.export_format = "html"
     app.exporter = HTMLExporter(app.config)
 
+    global_metadata = {
+        "site_name": "nb.karmi",
+        "site_title": "Notebooks • nb.karmi.cz",
+        "site_description": "A journal of a journey, written&nbsp;by&nbsp;<a href='https://karmi.cz'>Karel&nbsp;Minařík</a>.",
+    }
+
     if os.getenv("GA_ID"):
-        app.exporter.environment.globals["google_analytics_id"] = os.getenv("GA_ID")
+        global_metadata["google_analytics_id"] = os.getenv("GA_ID")
+
+    app.exporter.environment.globals.update(global_metadata)
 
     app.writer = FilesWriter()
 
@@ -184,15 +192,8 @@ def main(input_dir, output_dir):
 
     payload = {
         "pages": metadata_list,
-        "globals": {
-            "site_name": "nb.karmi",
-            "site_title": "Notebooks • nb.karmi.cz",
-            "site_description": "A journal of a journey, written&nbsp;by&nbsp;<a href='https://karmi.cz'>Karel&nbsp;Minařík</a>.",
-        },
+        "globals": global_metadata,
     }
-
-    if os.getenv("GA_ID"):
-        payload["globals"]["google_analytics_id"] = os.getenv("GA_ID")
 
     create_homepage(payload, "index.html.j2", output_dir)
 
