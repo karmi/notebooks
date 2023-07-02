@@ -25,9 +25,9 @@ def convert_single_notebook(app, notebook_path, output_dir):
     app.convert_single_notebook(notebook_path)
 
 
-def extract_metadata(html_file):
-    with open(html_file, "r") as file:
-        soup = BeautifulSoup(file, "html.parser")
+def extract_metadata_from_html(file):
+    with open(file, "r") as f:
+        soup = BeautifulSoup(f, "html.parser")
 
     meta = soup.find_all("meta")
     # print(meta)
@@ -45,19 +45,25 @@ def extract_metadata(html_file):
     return data
 
 
-def create_homepage(metadata_list, template_file, output_dir):
+def create_homepage(data, template_file, output_dir):
     file_loader = FileSystemLoader(
-        os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "templates", "homepage"
-        ),
+        [
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)), "templates", "homepage"
+            ),
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)), "templates", "common"
+            ),
+        ]
     )
     env = Environment(loader=file_loader)
 
-    print(metadata_list)
+    print(data)
 
     template = env.get_template(template_file)
+    template.environment.globals.update(data["globals"])
 
-    output = template.render(pages=metadata_list)
+    output = template.render(pages=data["pages"])
 
     with open(os.path.join(output_dir, "index.html"), "w") as file:
         file.write(output)
@@ -77,7 +83,12 @@ def main(input_dir, output_dir):
     config = get_config()
 
     config.TemplateExporter.template_name = "notebooks"
-    config.TemplateExporter.extra_template_basedirs = ["./templates/"]
+    config.TemplateExporter.extra_template_basedirs = [
+        os.path.join(os.path.dirname(os.path.realpath(__file__)), "templates"),
+    ]
+    config.TemplateExporter.extra_template_paths = [
+        os.path.join(os.path.dirname(os.path.realpath(__file__)), "templates", "common")
+    ]
 
     config.Exporter.preprocessors = [
         processors.update_metadata.Preprocessor,
@@ -91,11 +102,16 @@ def main(input_dir, output_dir):
 
     app.export_format = "html"
     app.exporter = HTMLExporter(app.config)
+
+    if os.getenv("GA_ID"):
+        app.exporter.environment.globals["google_analytics_id"] = os.getenv("GA_ID")
+
     app.writer = FilesWriter()
 
     app.output_base = "index"
 
     for notebook_path in notebooks:
+        # TODO: Drafts
         convert_single_notebook(app, notebook_path, output_dir)
 
     html_files = glob.glob(os.path.join(output_dir, "**/index.html"))
@@ -103,7 +119,7 @@ def main(input_dir, output_dir):
     metadata_list = []
     for html_file in html_files:
         print(f"Processing [{html_file}]")
-        metadata = extract_metadata(html_file)
+        metadata = extract_metadata_from_html(html_file)
         metadata["dirname"] = os.path.split(os.path.dirname(html_file))[-1]
         metadata_list.append(metadata)
 
@@ -115,11 +131,12 @@ def main(input_dir, output_dir):
             reverse=True,
         )
 
-    create_homepage(
-        metadata_list,
-        "index.html.j2",
-        output_dir,
-    )
+    payload = {"pages": metadata_list, "globals": {}}
+
+    if os.getenv("GA_ID"):
+        payload["globals"]["google_analytics_id"] = os.getenv("GA_ID")
+
+    create_homepage(payload, "index.html.j2", output_dir)
 
 
 if __name__ == "__main__":
@@ -130,6 +147,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output_dir", help="Directory to write exported notebooks", required=True
     )
+    # TODO: --draft=True|False
     args = parser.parse_args()
 
     main(args.input_dir, args.output_dir)

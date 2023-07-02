@@ -14,6 +14,9 @@
 {% endblock output_area_prompt %}
 
 {% block html_head %}
+{% if google_analytics_id -%}
+{% include 'ga.html.j2' %}
+{% endif -%}
 {{ super() }}
 <meta name="description" content="{{ nb['metadata']['description'] | escape_html_keep_quotes }}">
 <meta property="og:title" content="{{ nb['metadata']['title'] | escape_html_keep_quotes }}">
