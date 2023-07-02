@@ -1,5 +1,8 @@
 SHELL := /bin/bash
 
+# Variables
+build: draft=false
+
 ##@ Development
 docker: ## Start the Docker containers
 	docker-compose up
@@ -8,7 +11,7 @@ docker: ## Start the Docker containers
 build: ## Build the website
 	set -eu;
 	rm -rf ./_build;
-	(cd src/build && /usr/bin/env python3 build.py --input=../../content --output=../../_build);
+	(cd src/build && /usr/bin/env python3 build.py --input=../../content --output=../../_build --draft=${draft});
 
 preview: build ## Preview the website
 	@bash -c ' \

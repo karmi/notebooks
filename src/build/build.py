@@ -1,9 +1,13 @@
 import os
 import argparse
 import glob
+import re
 import shutil
+import yaml
 
 from datetime import datetime
+
+import nbformat
 
 from nbconvert import HTMLExporter
 from nbconvert.writers.files import FilesWriter
@@ -54,6 +58,23 @@ def extract_metadata_from_html(file):
     return data
 
 
+def get_frontmatter_from_notebook(nb):
+    tag = "metadata"
+    for cell in nb["cells"]:
+        if "tags" in cell["metadata"] and tag in cell["metadata"]["tags"]:
+            # Remove the comment character (#) and extra whitespace
+            source = "\n".join(
+                [
+                    line.strip()[1:].strip()
+                    for line in cell["source"].split("\n")
+                    if line.startswith("#")
+                ]
+            )
+            return yaml.safe_load(source)
+        else:
+            return {}
+
+
 def create_homepage(data, template_file, output_dir):
     file_loader = FileSystemLoader(
         [
@@ -102,6 +123,8 @@ def create_homepage(data, template_file, output_dir):
 
 
 def main(input_dir, output_dir):
+    build_drafts = re.match("ye?s?|true", args.draft, re.IGNORECASE)
+
     notebooks = glob.glob(os.path.join(input_dir, "*.ipynb"))
 
     config = get_config()
@@ -135,8 +158,12 @@ def main(input_dir, output_dir):
     app.output_base = "index"
 
     for notebook_path in notebooks:
-        # TODO: Drafts
-        convert_single_notebook(app, notebook_path, output_dir)
+        nb = nbformat.read(notebook_path, as_version=4)
+        metadata = get_frontmatter_from_notebook(nb)
+        if metadata.get("draft") and not build_drafts:
+            print(f"Skipping draft [{notebook_path}]")
+        else:
+            convert_single_notebook(app, notebook_path, output_dir)
 
     html_files = glob.glob(os.path.join(output_dir, "**/index.html"))
 
@@ -173,12 +200,20 @@ def main(input_dir, output_dir):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--input_dir", help="Directory containing Jupyter notebooks", required=True
+        "--input_dir",
+        help="Directory containing Jupyter notebooks",
+        required=True,
     )
     parser.add_argument(
-        "--output_dir", help="Directory to write exported notebooks", required=True
+        "--output_dir",
+        help="Directory to write exported notebooks",
+        required=True,
     )
-    # TODO: --draft=True|False
+    parser.add_argument(
+        "--draft",
+        help="Whether to build draft notebooks",
+        default="false",
+    )
     args = parser.parse_args()
 
     main(args.input_dir, args.output_dir)
