@@ -1,6 +1,7 @@
 import os
 import argparse
 import glob
+import shutil
 
 from datetime import datetime
 
@@ -14,6 +15,15 @@ from jinja2 import Environment, FileSystemLoader
 from traitlets.config import get_config
 
 import processors
+
+
+# For Jinja templates
+def datetime_format(value, format="%d/%m/%Y"):
+    try:
+        getattr(value, "strftime")
+    except AttributeError:
+        value = datetime.fromisoformat(value)
+    return value.strftime(format)
 
 
 def convert_single_notebook(app, notebook_path, output_dir):
@@ -61,15 +71,34 @@ def create_homepage(data, template_file, output_dir):
 
     template = env.get_template(template_file)
     template.environment.globals.update(data["globals"])
+    template.environment.filters["datetime_format"] = datetime_format
 
     output = template.render(pages=data["pages"])
 
     with open(os.path.join(output_dir, "index.html"), "w") as file:
         file.write(output)
 
-    os.mkdir(os.path.join(output_dir, "css"))
-    with open(os.path.join(output_dir, "css", "style.css"), "w") as file:
-        file.write("body { font-family: sans-serif; }")
+    shutil.copytree(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "templates",
+            "homepage",
+            "css",
+        ),
+        os.path.join(output_dir, "css"),
+        dirs_exist_ok=True,
+    )
+
+    shutil.copytree(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "templates",
+            "common",
+            "assets",
+        ),
+        os.path.join(output_dir, "assets"),
+        dirs_exist_ok=True,
+    )
 
 
 def main(input_dir, output_dir):
@@ -126,7 +155,14 @@ def main(input_dir, output_dir):
             reverse=True,
         )
 
-    payload = {"pages": metadata_list, "globals": {}}
+    payload = {
+        "pages": metadata_list,
+        "globals": {
+            "site_name": "nb.karmi",
+            "site_title": "Notebooks • nb.karmi.cz",
+            "site_description": "A journal of a journey, written&nbsp;by&nbsp;<a href='https://karmi.cz'>Karel&nbsp;Minařík</a>.",
+        },
+    }
 
     if os.getenv("GA_ID"):
         payload["globals"]["google_analytics_id"] = os.getenv("GA_ID")
