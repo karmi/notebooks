@@ -35,6 +35,9 @@ def convert_single_notebook(app, notebook_path, output_dir):
         output_dir, os.path.splitext(os.path.basename(notebook_path))[0]
     )
     app.writer.build_directory = app.output_files_dir
+    app.exporter.environment.globals.update(
+        {"notebook_filename": os.path.basename(notebook_path)}
+    )
     app.convert_single_notebook(notebook_path)
 
 
@@ -155,12 +158,18 @@ def main(input_dir, output_dir):
         "site_name": "nb.karmi",
         "site_title": "Notebooks • nb.karmi.cz",
         "site_description": "A journal of a journey, written&nbsp;by&nbsp;<a href='https://karmi.cz'>Karel&nbsp;Minařík</a>.",
+        "github_url": "https://github.com/karmi/notebooks",
+        "generated_on": datetime.utcnow(),
     }
 
     if os.getenv("GA_ID"):
         global_metadata["google_analytics_id"] = os.getenv("GA_ID")
 
+    if os.getenv("CF_PAGES_COMMIT_SHA"):
+        global_metadata["commit_sha"] = os.getenv("CF_PAGES_COMMIT_SHA")
+
     app.exporter.environment.globals.update(global_metadata)
+    app.exporter.environment.filters["datetime_format"] = datetime_format
 
     app.writer = FilesWriter()
 
