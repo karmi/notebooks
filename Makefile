@@ -3,6 +3,10 @@ SHELL := /bin/bash
 # Variables
 build: draft=false
 
+##@ Install
+install: ## Install the Python packages
+	(cd src/build && /usr/bin/env python3 -m pip install -r requirements.txt);
+
 ##@ Development
 docker: ## Start the Docker containers
 	docker-compose up
