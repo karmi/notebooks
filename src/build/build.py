@@ -133,6 +133,18 @@ def create_homepage(data, template_file, output_dir):
         os.path.join(output_dir, "404.html"),
     )
 
+    shutil.copyfile(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "templates",
+            "common",
+            "assets",
+            "icons",
+            "favicon.ico",
+        ),
+        os.path.join(output_dir, "favicon.ico"),
+    )
+
 
 def main(input_dir, output_dir):
     build_drafts = re.match("ye?s?|true", args.draft, re.IGNORECASE)
