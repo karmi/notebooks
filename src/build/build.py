@@ -88,8 +88,6 @@ def create_homepage(data, template_file, output_dir):
     )
     env = Environment(loader=file_loader)
 
-    print(data)
-
     template = env.get_template(template_file)
     template.environment.globals.update(data["globals"])
     template.environment.filters["datetime_format"] = datetime_format
@@ -149,6 +147,9 @@ def main(input_dir, output_dir):
 
     app.export_format = "html"
     app.exporter = HTMLExporter(app.config)
+
+    app.postprocessor_class = "processors.postprocess.Postprocessor"
+    app.init_postprocessor()
 
     global_metadata = {
         "site_name": "nb.karmi",
