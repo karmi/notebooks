@@ -30,17 +30,6 @@ def datetime_format(value, format="%d/%m/%Y"):
     return value.strftime(format)
 
 
-def convert_single_notebook(app, notebook_path, output_dir):
-    app.output_files_dir = os.path.join(
-        output_dir, os.path.splitext(os.path.basename(notebook_path))[0]
-    )
-    app.writer.build_directory = app.output_files_dir
-    app.exporter.environment.globals.update(
-        {"notebook_filename": os.path.basename(notebook_path)}
-    )
-    app.convert_single_notebook(notebook_path)
-
-
 def extract_metadata_from_html(file):
     with open(file, "r") as f:
         soup = BeautifulSoup(f, "html.parser")
@@ -146,6 +135,17 @@ def create_homepage(data, template_file, output_dir):
     )
 
 
+def convert_single_notebook(app, notebook_path, output_dir):
+    app.output_files_dir = os.path.join(
+        output_dir, os.path.splitext(os.path.basename(notebook_path))[0]
+    )
+    app.writer.build_directory = app.output_files_dir
+    app.exporter.environment.globals.update(
+        {"notebook_filename": os.path.basename(notebook_path)}
+    )
+    app.convert_single_notebook(notebook_path)
+
+
 def main(input_dir, output_dir):
     build_drafts = re.match("ye?s?|true", args.draft, re.IGNORECASE)
 
@@ -179,6 +179,7 @@ def main(input_dir, output_dir):
 
     global_metadata = {
         "site_name": "nb.karmi",
+        "site_hostname": "https://nb.karmi.cz",
         "site_title": "Notebooks • nb.karmi.cz",
         "site_description": "A journal of a journey, written&nbsp;by&nbsp;<a href='https://karmi.cz'>Karel&nbsp;Minařík</a>.",
         "github_url": "https://github.com/karmi/notebooks",
@@ -205,6 +206,22 @@ def main(input_dir, output_dir):
             print(f"Skipping draft [{notebook_path}]")
         else:
             convert_single_notebook(app, notebook_path, output_dir)
+            if metadata.get("cover"):
+                filepath = metadata.get("cover")[1:]
+                print("filepath:", filepath)
+                os.makedirs(
+                    os.path.dirname(os.path.join(output_dir, filepath)), exist_ok=True
+                )
+                shutil.copyfile(
+                    os.path.join(
+                        os.path.dirname(os.path.realpath(__file__)),
+                        "..",
+                        "..",
+                        "content",
+                        filepath,
+                    ),
+                    os.path.join(output_dir, filepath),
+                )
 
     html_files = glob.glob(os.path.join(output_dir, "**/index.html"))
 
