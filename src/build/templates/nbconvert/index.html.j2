@@ -18,9 +18,9 @@
 {% include 'ga.html.j2' %}
 {% endif -%}
 {{ super() }}
-<meta name="description" content="{{ nb['metadata']['description'] | escape_html_keep_quotes }}">
+<meta name="description" content="{{ nb['metadata']['description'] | striptags | safe }}">
 <meta property="og:title" content="{{ nb['metadata']['title'] | escape_html_keep_quotes }}">
-<meta property="og:description" content="{{ nb['metadata']['description'] | escape_html_keep_quotes }}">
+<meta property="og:description" content="{{ nb['metadata']['description'] | striptags | safe }}">
 <meta property="og:article:published_time" content="{{ nb['metadata']['date'] }}">
 <meta property="og:article:author" content="{{ nb['metadata']['author'] }}">
 <meta property="og:type" content="article">
@@ -35,19 +35,44 @@
 
 {% block body_header %}
   <body class="jp-Notebook">
-  <div class="header">
-    <div class="logo-container">{% include 'assets/books.svg' %}</div>
-  </div>
+  <header id="hidden-header" class="hidden">
+    <div>{{ nb['metadata']['title'] | escape_html_keep_quotes }} <a href="/" title="Back to homepage">{% include 'assets/icons/books.svg' %}</a></div>
+  </header>
   <div class="content">
 {% endblock body_header %}
 
 {% block body_footer %}
-  </div>
   <footer>
-    <div id="bibtex">
-      <h3>Citation</h3>
-      <pre>{{ nb['metadata']['bibtex'] }}</pre>
-    </div>
+    <p>
+      &copy; {{ nb['metadata']['date'] | datetime_format("%Y") }} Karel Minařík.
+      Licensed by <a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>.
+      Generated from
+      {% if commit_sha -%}
+      version
+      <a href="{{ github_url }}/blob/{{ commit_sha }}/content/{{ notebook_filename }}"><code>{{ commit_sha | truncate(length=7, end="") }}</code></a> of
+      {% endif -%}
+      the <a href="{{ github_url  }}">source code</a>
+      on {{ generated_on | datetime_format }}.
+    </p>
+    <p class="back_to_home">&larr; <a href="/">Back to homepage</a></p>
   </footer>
+  </div><!-- /content -->
   </body>
+  <script>
+    function handleScroll() {
+      const header = document.getElementById('hidden-header');
+      const target = document.querySelector('.content .jp-RenderedHTMLCommon > p');
+      const targetPosition = target.getBoundingClientRect().top;
+
+      if (targetPosition < 0) {
+        header.classList.remove('hidden');
+        header.classList.add('visible');
+      } else {
+        header.classList.remove('visible');
+        header.classList.add('hidden');
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+  </script>
 {% endblock body_footer %}

@@ -1,66 +1,104 @@
-@media (max-width: 600px) and (orientation: portrait) {
-  .content { margin: 0 3vw 4rem 5vw; }
-  footer > div { margin: 0 3vw 0 5vw; }
-  .jp-InputPrompt{ display: none; }
-  .jp-OutputPrompt { display: none; }
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
+@font-face {
+  font-family: 'iA Writer Mono S';
+  font-weight: normal;
+  src: url('/assets/fonts/iAWriterMonoS/iAWriterMonoS-Regular.woff2') format('woff2');
+  font-display: swap;
 }
 
-@media (min-width: 600px) and (orientation: portrait) {
-  .content { margin: 0 3vw 4rem 5vw; }
-  footer > div { margin: 0 3vw 0 5vw; }
-  .jp-InputPrompt{ display: none; }
-  .jp-OutputPrompt { display: none; }
+@font-face {
+  font-family: 'iA Writer Duo S';
+  font-weight: normal;
+  src: url('/assets/fonts/iAWriterDuoS/iAWriterDuoS-Regular.woff2') format('woff2');
+  font-display: swap;
 }
 
-@media (min-width: 600px) and (orientation: landscape) {
-  .content { margin: 0 10vw 4rem 10vw; }
-  footer > div { margin: 0 10vw 0 10vw; }
-  .jp-InputPrompt{ display: none; }
-  .jp-OutputPrompt { display: none; }
+@font-face {
+  font-family: 'iA Writer Duo S';
+  font-weight: bold;
+  src: url('/assets/fonts/iAWriterDuoS/iAWriterDuoS-Bold.woff2') format('woff2');
+  font-display: swap;
 }
 
-@media (min-width: 960px) and (orientation: landscape) {
-  .content { margin: 0 10vw 4rem 10vw; left: calc(var(--jp-cell-prompt-width) * -1) }
-  footer > div { margin: 0 10vw 0 10vw; left: calc(var(--jp-cell-prompt-width) / 2) }
-  .jp-InputPrompt{ display: block; }
-  .jp-OutputPrompt { display: block; }
+@font-face {
+  font-family: 'iA Writer Duo S';
+  font-style: italic;
+  src: url('/assets/fonts/iAWriterDuoS/iAWriterDuoS-Italic.woff2') format('woff2');
+  font-display: swap;
 }
 
-@media (min-width: 1280px) and (orientation: landscape) {
-  .content { margin: 0 auto 4rem auto; left: calc(var(--jp-cell-prompt-width) * -1) }
-  footer > div { margin: 0 auto 0 auto; left: calc(var(--jp-cell-prompt-width) / 2) }
-  .jp-InputPrompt{ display: block; }
-  .jp-OutputPrompt { display: block; }
+
+@supports (font-variation-settings: normal) {
+  code { font-family: 'Fira Code VF', monospace; }
 }
 
 :root {
-  --jp-code-font-size: 13px;
-  --jp-cell-editor-background: #f3f8fb;
+  --jp-ui-font-family: 'iA Writer Duo S', sans-serif;
+  --jp-content-font-family: 'iA Writer Duo S', sans-serif;
+  --jp-code-font-size: 14px;
+  --jp-code-font-family: 'Fira Code', Menlo, Consolas, monospace;
+  /* --jp-code-font-family: 'iA Writer Mono S', monospace; */
+  --jp-cell-editor-background: #1a202c;
+  --jp-mirror-editor-variable-color: #eff0f4de;
+
+  --nbkarmi-red: #dc143c;
 }
 
 body {
+  color: #222 !important;
+  background: #f6f5f0 !important;
+  font-family: 'iA Writer Duo S', sans-serif !important;
   padding: 0 !important;
   margin: 0 !important;
 }
 
 iframe {
-  border: 1px solid var(--tailwind-grey-700);
+  border: 1px solid var(--tailwind-grey-600);
 }
 
-.header {
-  background-color: var(--tailwind-grey-200);
-  padding: 20px 10px;
+#hidden-header {
+  color: var(--nbkarmi-red);
+  background-color: var(--tailwind-grey-900);
+  font-size: 18px;
+  text-align: right;
+  padding: 1rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+  box-shadow: 0 0px 10px var(--tailwind-grey-900);
+  text-shadow: 0px 0px 1px var(--tailwind-grey-700);
 }
-
-.logo-container {
-  margin: auto;
-  width: fit-content;
+#hidden-header.hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
 }
-
-.logo-container svg {
-  fill: var(--tailwind-grey-900);
-  max-width: 100%;
-  height: 200px;
+#hidden-header.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition: opacity 0.3s, transform 0.3s;
+}
+#hidden-header > div {
+  max-width: 60rem;
+  margin: 0 auto 0 auto;
+  padding-right: 11rem;
+}
+#hidden-header a {
+  color: var(--nbkarmi-red);
+  text-decoration: none;
+}
+#hidden-header svg {
+  fill: var(--nbkarmi-red);
+  width: 20px;
+  height: 20px;
+  position: relative;
+  top: 5px;
+  margin-left: 5px;
+  filter: drop-shadow(0px 0px 1px var(--tailwind-grey-700));
 }
 
 .content {
@@ -68,24 +106,64 @@ iframe {
   position: relative;
 }
 
-footer {
-  color: var(--tailwind-grey-500);
-  background-color: var(--tailwind-grey-900);
+.content .logo svg {
+  fill: var(--tailwind-grey-600);
+  width: 20px;
+  height: 20px;
 }
 
-footer > div {
-  max-width: 60rem;
-  padding: 2rem 1rem 2rem 1rem;
-  position: relative;
+.content h1 {
+  color: var(--nbkarmi-red) !important;
+  font-weight: bold;
+  text-align: right !important;
+  text-decoration: underline;
+  text-decoration-color: var(--nbkarmi-red);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 
-footer #bibtex h3 {
-  margin-bottom: 0.5rem;
+.content #published_date {
+    text-align: right;
+    position: relative;
+    top: 2.2rem;
+    font-size: 80%;
+    font-style: italic;
+    color: var(--tailwind-grey-700);
 }
 
-footer #bibtex pre {
-  margin: 0;
-  white-space: pre-wrap;
+.content h1 + blockquote {
+  font-style: italic;
+  text-align: right;
+  border: none;
+  margin-bottom: 3rem;
+}
+
+.content h1 + blockquote p {
+  text-align: right;
+}
+
+.content blockquote p {
+  margin: 0 0 0.25rem 0;
+}
+
+.content footer {
+  color: var(--tailwind-grey-900);
+  font-size: 12px;
+  margin-left: calc(calc(var(--jp-cell-prompt-width) + var(--jp-code-padding)) + calc(var(--jp-code-padding) * 3));
+  border-top: 5px solid var(--tailwind-grey-800);
+  padding: 3em 0.25rem 0.25rem 0.25rem;
+  margin-top: 3rem;
+}
+
+.content footer a {
+  text-decoration: underline;
+}
+
+.content footer .back_to_home {
+  font-weight: bold;
+  margin: 1rem 0 1rem 0;
 }
 
 .jp-InputArea-editor {
@@ -101,9 +179,12 @@ footer #bibtex pre {
   padding-top: 13px;
 }
 
-.jp-OutputPrompt {
+/* .jp-OutputPrompt {
   padding-top: 7px;
-}
+  display: table-cell;
+  vertical-align: top;
+  min-width: var(--jp-cell-prompt-width);
+} */
 
 .jp-OutputArea-output {
   padding-top: 10px;
@@ -127,8 +208,8 @@ footer #bibtex pre {
 }
 
 .jp-RenderedHTMLCommon blockquote {
-  margin: 0 0 0 1rem;
-  border-left: 5px solid var(--tailwind-grey-100);
+  margin: 0 0 1rem 1rem;
+  border-left: 5px solid var(--nbkarmi-red);
 }
 
 .jp-RenderedHTMLCommon pre, .jp-RenderedHTMLCommon code {
@@ -159,6 +240,52 @@ footer #bibtex pre {
   margin-bottom: 0;
 }
 
+.jp-MarkdownOutput {
+  margin-bottom: 0.5rem;
+}
+
 .jp-Editor .CodeMirror {
   overflow: scroll !important;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+  .content { margin: 1rem 3vw 4rem 5vw; }
+  #hidden-header { font-size: 14px !important; }
+  #hidden-header > div { padding-right: 2rem !important; }
+  .content footer { margin-left: 0; }
+  .jp-InputPrompt{ display: none; }
+  .jp-OutputPrompt { display: none; }
+}
+
+@media (min-width: 600px) and (orientation: portrait) {
+  .content { margin: 1rem 3vw 4rem 5vw; }
+  #hidden-header { font-size: 14px !important; }
+  #hidden-header > div { padding-right: 2rem !important; }
+  .content footer { margin-left: 0; }
+  .jp-InputPrompt{ display: none; }
+  .jp-OutputPrompt { display: none; }
+}
+
+@media (min-width: 600px) and (orientation: landscape) {
+  .content { margin: 1rem 10vw 4rem 10vw; }
+  #hidden-header { font-size: 16px !important; }
+  #hidden-header > div { padding-right: 2rem !important; }
+  .content footer { margin-left: 0; }
+  .jp-InputPrompt{ display: none; }
+  .jp-OutputPrompt { display: none; }
+}
+
+@media (min-width: 960px) and (orientation: landscape) {
+  .content { margin: 1rem 10vw 4rem 10vw; left: calc(var(--jp-cell-prompt-width) * -1) }
+  #hidden-header > div { padding-right: 11rem !important; }
+  .content footer { margin-left: calc(calc(var(--jp-cell-prompt-width) + var(--jp-code-padding)) + calc(var(--jp-code-padding) * 3)); }
+  .jp-InputPrompt{ display: block; }
+  .jp-OutputPrompt { display: block; }
+}
+
+@media (min-width: 1280px) and (orientation: landscape) {
+  .content { margin: 0 auto 4rem auto; left: calc(var(--jp-cell-prompt-width) * -1) }
+  .content footer { margin-left: calc(calc(var(--jp-cell-prompt-width) + var(--jp-code-padding)) + calc(var(--jp-code-padding) * 3)); }
+  .jp-InputPrompt{ display: block; }
+  .jp-OutputPrompt { display: block; }
 }
