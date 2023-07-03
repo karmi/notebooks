@@ -122,6 +122,17 @@ def create_homepage(data, template_file, output_dir):
         dirs_exist_ok=True,
     )
 
+    shutil.copyfile(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "templates",
+            "common",
+            "pages",
+            "404.html",
+        ),
+        os.path.join(output_dir, "404.html"),
+    )
+
 
 def main(input_dir, output_dir):
     build_drafts = re.match("ye?s?|true", args.draft, re.IGNORECASE)
