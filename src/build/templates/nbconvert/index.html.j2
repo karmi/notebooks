@@ -5,6 +5,12 @@
 {# https://github.com/jupyter/nbconvert/blob/main/share/templates/lab/index.html.j2 #}
 {%- extends 'lab/index.html.j2' -%}
 
+{%- block html_head_js_mathjax -%}
+{# Disable #}
+{%- endblock html_head_js_mathjax -%}
+
+{# TODO: Reduce size of "notebook_css" block #}
+
 {% block in_prompt -%}
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[]:</div>
 {%- endblock in_prompt %}
