@@ -463,9 +463,9 @@ all of MD as it is not optimized for dense, information rich UIs.
   --jp-mirror-editor-variable-3-color: var(--tailwind-green-600);
   --jp-mirror-editor-punctuation-color: var(--tailwind-blue-400);
   --jp-mirror-editor-property-color: var(--tailwind-blue-400);
-  --jp-mirror-editor-operator-color: #aa22ff;
+  --jp-mirror-editor-operator-color: var(--tailwind-blue-700);
   --jp-mirror-editor-comment-color: #408080;
-  --jp-mirror-editor-string-color: #ba2121;
+  --jp-mirror-editor-string-color: var(--tailwind-yellow-500);
   --jp-mirror-editor-string-2-color: var(--tailwind-purple-300);
   --jp-mirror-editor-meta-color: #aa22ff;
   --jp-mirror-editor-qualifier-color: #555;
