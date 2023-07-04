@@ -20,7 +20,6 @@
 {% endblock output_area_prompt %}
 
 {% block html_head %}
-<link rel="preload" href="/assets/fonts/iAWriterDuoS/iAWriterDuoS-Regular.woff2" as="font" type="font/woff2" crossorigin>
 {% if google_analytics_id -%}
 {% include 'ga.html.j2' %}
 {% endif -%}
@@ -36,6 +35,7 @@
 <meta property="og:article:published_time" content="{{ nb['metadata']['date'] }}">
 <meta property="og:article:author" content="{{ nb['metadata']['author'] }}">
 <meta property="og:type" content="article">
+<link rel="preload" href="/assets/fonts/iAWriterDuoS/iAWriterDuoS-Regular.woff2" as="font" type="font/woff2" crossorigin>
 {% endblock html_head %}
 
 {%- block html_head_css -%}
