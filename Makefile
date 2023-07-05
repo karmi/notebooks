@@ -4,8 +4,11 @@ SHELL := /bin/bash
 build: draft=false
 
 ##@ Install
-install: ## Install the Python packages
-	(cd src/build && /usr/bin/env python3 -m pip install -r requirements.txt);
+setup: ## Setup the Python virtual environment
+	(cd src/build && python3 -m venv env);
+
+install: setup ## Install the Python packages
+	(cd src/build && source env/bin/activate && /usr/bin/env python3 -m pip install -r requirements.txt);
 
 ##@ Development
 docker: ## Start the Docker containers
@@ -15,7 +18,7 @@ docker: ## Start the Docker containers
 build: ## Build the website
 	set -eu;
 	rm -rf ./_build;
-	(cd src/build && /usr/bin/env python3 build.py --input=../../content --output=../../_build --draft=${draft});
+	(cd src/build && source env/bin/activate && /usr/bin/env python3 build.py --input=../../content --output=../../_build --draft=${draft});
 
 preview: build ## Preview the website
 	@bash -c ' \
