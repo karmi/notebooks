@@ -41,6 +41,9 @@ class Application:
         self._converter.export_format = "html"
         self._converter.exporter = HTMLExporter(self._converter.config)
 
+        self._converter.postprocessor_class = "processors.postprocess.Postprocessor"
+        self._converter.init_postprocessor()
+
         self._converter.writer = FilesWriter()
         self._converter.output_base = "index"
 
