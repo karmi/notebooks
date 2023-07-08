@@ -2,3 +2,4 @@ beautifulsoup4
 nbconvert
 nbformat
 pyyaml
+requests

@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 # Variables
-build: draft=false
+build: draft=false clear_cache=false
 
 ##@ Install
 setup: ## Setup the Python virtual environment
@@ -24,7 +24,7 @@ build: ## Build the website
 		rm -rf ./_build-orig; \
 		if [ -d "./_build" ]; then cp -r ./_build ./_build-orig; fi; \
 		(cd src/build && source env/bin/activate && \
-		/usr/bin/env python3 build.py --input=../../content --output=../../_build --draft=${draft}) && \
+		/usr/bin/env python3 build.py --input=../../content --output=../../_build --draft=${draft} --clear-cache=${clear_cache}) && \
 		rm -rf ./_build-orig || \
 		(echo -e "\n[!] Build failed with error, restoring previous one..."; \
 		rm -rf ./_build; \
@@ -46,4 +46,4 @@ help:  ## Display help
 #------------- <https://suva.sh/posts/well-documented-makefiles> --------------
 
 .DEFAULT_GOAL := help
-.PHONY: docker build preview
+.PHONY: setup install docker build preview

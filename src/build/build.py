@@ -10,6 +10,7 @@ import yaml
 
 from bs4 import BeautifulSoup
 import jinja2
+import requests
 
 import traitlets.config
 
@@ -64,6 +65,12 @@ class Application:
         for notebook_path in notebooks_path:
             self._converter.writer.build_directory = output_dir
             generator.generate(notebook_path, output_dir)
+
+    def clear_cache(self):
+        self.logger.info("Clearing cache...")
+        self.logger.info(80 * "┄")
+        cleaner = CacheCleaner(self)
+        cleaner.clear_cache()
 
 
 class Config:
@@ -243,6 +250,43 @@ class NotebookGenerator:
                 )
 
 
+class CacheCleaner:
+    def __init__(self, app: Application):
+        self.app = app
+
+    def clear_cache(self):
+        if os.getenv("CLOUDFLARE_ZONE_ID"):
+            cloudflare_zone_id = os.getenv("CLOUDFLARE_ZONE_ID")
+        else:
+            raise RuntimeError("The environment variable CLOUDFLARE_ZONE_ID is not set")
+
+        if os.getenv("CLOUDFLARE_API_KEY"):
+            cloudflare_api_key = os.getenv("CLOUDFLARE_API_KEY")
+        else:
+            raise RuntimeError("The environment variable CLOUDFLARE_API_KEY is not set")
+
+        url = f"https://api.cloudflare.com/client/v4/zones/{cloudflare_zone_id}/purge_cache"
+
+        response = requests.request(
+            "POST",
+            url,
+            json={"purge_everything": True},
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {cloudflare_api_key}",
+            },
+        )
+
+        if response.status_code > 200:
+            error_message = "".join(e["message"] for e in response.json()["errors"])
+            self.app.logger.error(
+                f"Error making request to Cloudflare: {error_message}"
+            )
+            raise RuntimeError(f"HTTP Error: [{response.status_code}] {error_message}")
+        else:
+            self.app.logger.info("Succesfully cleared the Cloudflare cache")
+
+
 class TemplateHelpers:
     @staticmethod
     def datetime_format(value, format="%d/%m/%Y"):
@@ -273,6 +317,10 @@ def main(args: argparse.Namespace):
         args.output_dir,
     )
 
+    if re.match("ye?s?|true", args.clear_cache, re.IGNORECASE):
+        app.logger.info("─" * 80)
+        app.clear_cache()
+
     app.logger.info("─" * 80)
     app.logger.info(f"Duration: {time.perf_counter()-start:0.2f}sec")
 
@@ -292,6 +340,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--draft",
         help="Whether to build draft notebooks",
+        default="false",
+    )
+    parser.add_argument(
+        "--clear-cache",
+        help="Whether to clear Cloudflare cache",
         default="false",
     )
     args = parser.parse_args()
