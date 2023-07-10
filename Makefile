@@ -1,7 +1,8 @@
 SHELL := /bin/bash
 
 # Variables
-build: draft=false clear_cache=false
+build: draft=false
+build: clear_cache=false
 
 ##@ Install
 setup: ## Setup the Python virtual environment
